@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbu.dao.WeiboMapper">
+  <resultMap id="BaseResultMap" type="com.hrbu.model.Weibo">
+    <!--@mbg.generated-->
+    <!--@Table weibo-->
+    <id column="messageId" jdbcType="VARCHAR" property="messageid" />
+    <result column="positive" jdbcType="DOUBLE" property="positive" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="createTime" jdbcType="VARCHAR" property="createtime" />
+    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <result column="messageUrl" jdbcType="VARCHAR" property="messageurl" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
+    <result column="repostsCount" jdbcType="INTEGER" property="repostscount" />
+    <result column="commentsCount" jdbcType="INTEGER" property="commentscount" />
+    <result column="attitudesCount" jdbcType="INTEGER" property="attitudescount" />
+    <result column="weiboEmotion" jdbcType="VARCHAR" property="weiboemotion" />
+  </resultMap>
+  <resultMap id="TopicNumMap" type="com.hrbu.model.TopicNum">
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="num" javaType="INTEGER" property="num" />
+  </resultMap>
+  <resultMap id="OneTopicNumInfoMap" type="com.hrbu.model.OneTopicNumInfo">
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="createTime" jdbcType="VARCHAR" property="createTime" />
+    <result column="num" javaType="INTEGER" property="num" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    messageId, positive, title, createTime, userName, messageUrl, `text`, repostsCount, 
+    commentsCount, attitudesCount, weiboEmotion
+  </sql>
+
+  <!--模糊查询-->
+  <select id="selectLikeTitle" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from weibo
+    <where>
+      <if test="myTitle!= null and myTitle!=''">
+        title like '%' #{myTitle} '%'
+      </if>
+    </where>
+  </select>
+
+  <!--话题数量-->
+  <select id="getTopicNum" parameterType="java.lang.String" resultMap="TopicNumMap">
+    SELECT title title,COUNT(*) num
+    FROM weibo
+    <where>
+      <if test="startTime!=null and startTime!=''">
+        and createTime <![CDATA[>=]]> #{startTime, jdbcType=VARCHAR}
+      </if>
+      <if test="stopTime!=null and stopTime!=''">
+        and createTime <![CDATA[<=]]> #{stopTime, jdbcType=VARCHAR}
+      </if>
+    </where>
+    GROUP BY title
+  </select>
+
+  <!--单个话题的话题数目 getOneTopicNumInfo-->
+  <select id="getOneTopicNumInfo" parameterType="java.lang.String" resultMap="OneTopicNumInfoMap">
+    SELECT title title, date_format(createTime, '%Y-%m-%d') createTime, COUNT(*) num
+    FROM weibo
+    <where>
+      <if test="title!=null and title!=''">
+        and title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="startTime!=null and startTime!=''">
+        and createTime <![CDATA[>=]]> #{startTime, jdbcType=VARCHAR}
+      </if>
+      <if test="stopTime!=null and stopTime!=''">
+        and createTime <![CDATA[<=]]> #{stopTime, jdbcType=VARCHAR}
+      </if>
+    </where>
+    GROUP BY title, date_format(createTime, '%Y-%m-%d')
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from weibo
+    where messageId = #{messageid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from weibo
+    where messageId = #{messageid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hrbu.model.Weibo">
+    <!--@mbg.generated-->
+    insert into weibo (messageId, positive, title, 
+      createTime, userName, messageUrl, 
+      `text`, repostsCount, commentsCount, 
+      attitudesCount, weiboEmotion)
+    values (#{messageid,jdbcType=VARCHAR}, #{positive,jdbcType=DOUBLE}, #{title,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{messageurl,jdbcType=VARCHAR}, 
+      #{text,jdbcType=VARCHAR}, #{repostscount,jdbcType=INTEGER}, #{commentscount,jdbcType=INTEGER}, 
+      #{attitudescount,jdbcType=INTEGER}, #{weiboemotion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hrbu.model.Weibo">
+    <!--@mbg.generated-->
+    insert into weibo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        messageId,
+      </if>
+      <if test="positive != null">
+        positive,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="username != null">
+        userName,
+      </if>
+      <if test="messageurl != null">
+        messageUrl,
+      </if>
+      <if test="text != null">
+        `text`,
+      </if>
+      <if test="repostscount != null">
+        repostsCount,
+      </if>
+      <if test="commentscount != null">
+        commentsCount,
+      </if>
+      <if test="attitudescount != null">
+        attitudesCount,
+      </if>
+      <if test="weiboemotion != null">
+        weiboEmotion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        #{messageid,jdbcType=VARCHAR},
+      </if>
+      <if test="positive != null">
+        #{positive,jdbcType=DOUBLE},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="messageurl != null">
+        #{messageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null">
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="repostscount != null">
+        #{repostscount,jdbcType=INTEGER},
+      </if>
+      <if test="commentscount != null">
+        #{commentscount,jdbcType=INTEGER},
+      </if>
+      <if test="attitudescount != null">
+        #{attitudescount,jdbcType=INTEGER},
+      </if>
+      <if test="weiboemotion != null">
+        #{weiboemotion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hrbu.model.Weibo">
+    <!--@mbg.generated-->
+    update weibo
+    <set>
+      <if test="positive != null">
+        positive = #{positive,jdbcType=DOUBLE},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="messageurl != null">
+        messageUrl = #{messageurl,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null">
+        `text` = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="repostscount != null">
+        repostsCount = #{repostscount,jdbcType=INTEGER},
+      </if>
+      <if test="commentscount != null">
+        commentsCount = #{commentscount,jdbcType=INTEGER},
+      </if>
+      <if test="attitudescount != null">
+        attitudesCount = #{attitudescount,jdbcType=INTEGER},
+      </if>
+      <if test="weiboemotion != null">
+        weiboEmotion = #{weiboemotion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where messageId = #{messageid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hrbu.model.Weibo">
+    <!--@mbg.generated-->
+    update weibo
+    set positive = #{positive,jdbcType=DOUBLE},
+      title = #{title,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=VARCHAR},
+      userName = #{username,jdbcType=VARCHAR},
+      messageUrl = #{messageurl,jdbcType=VARCHAR},
+      `text` = #{text,jdbcType=VARCHAR},
+      repostsCount = #{repostscount,jdbcType=INTEGER},
+      commentsCount = #{commentscount,jdbcType=INTEGER},
+      attitudesCount = #{attitudescount,jdbcType=INTEGER},
+      weiboEmotion = #{weiboemotion,jdbcType=VARCHAR}
+    where messageId = #{messageid,jdbcType=VARCHAR}
+  </update>
+</mapper>

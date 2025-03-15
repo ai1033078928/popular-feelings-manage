@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+		PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+ 	<!-- 引入配置文件 -->  
+	<properties resource="conf/jdbc.properties"></properties>
+
+	<context id="dictionaries">
+		<commentGenerator>
+			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+			<property name="suppressAllComments" value="true"/>
+		</commentGenerator>
+		<!-- jdbc连接 -->  
+		<jdbcConnection connectionURL="${jdbc_url}"
+			driverClass="${jdbc_driver}" 			 	       
+		 	password="${jdbc_password}" 
+		 	userId="${jdbc_user}">
+		 	<!--MySQL 不支持 schema 或者 catalog 所以需要添加这个-->
+			<!--参考 : http://www.mybatis.org/generator/usage/mysql.html-->
+			<property name="nullCatalogMeansCurrent" value="true"/>
+		 </jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!-- 实体类所存放位置 -->
+		<javaModelGenerator targetPackage="com.hrbu.model"
+			targetProject="${project}">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" /> 
+			<!-- 从数据库返回的值被清理前后的空格(通过trim方法实现) -->
+			<property name="trimStrings" value="true" /> 
+		</javaModelGenerator>
+		
+		<!-- java客户端类对应的xml映射文件存放位置 -->
+		<sqlMapGenerator targetPackage="mybatis.mappers" 
+			targetProject="src/main/resources" />	<!--demo-3/src/main/resources-->
+		<!-- java客户端类接口文件存放位置 -->
+		<javaClientGenerator targetPackage="com.hrbu.dao"
+			targetProject="${project}" type="XMLMAPPER" >
+		<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+			
+		<!-- 配置自己表信息(库名schema="${project}" 表名) -->
+		<!-- <columnOverride column="???" property="???" /> -->
+		<table tableName="root_user" >
+		</table>
+
+		<table tableName="user" >
+		</table>
+
+	</context>
+
+</generatorConfiguration>
+		

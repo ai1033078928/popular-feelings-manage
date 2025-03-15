@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../static/css/sweetalert2.min.css" th:href="@{/css/sweetalert2.min.css}"/>
+    <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link type="text/css" rel="stylesheet" href="../static/css/pagination.css" th:href="@{/css/pagination.css}">
+    <style>
+        .table tbody tr td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="mytop col-lg-12">
+        <!--导航栏: https://www.runoob.com/bootstrap/bootstrap-navbar.html-->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="col-lg-9 navbar-header">
+                    <a class="navbar-brand" th:href="@{/user/index}">舆情分析</a>
+                </div>
+                <div class="col-lg-3">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a th:href="@{/user/login}">登录</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/user/register}">注册</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                展开
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/data/datalist}">微博信息</a></li>
+                                <li><a th:href="@{/data/topnlist}">热点话题</a></li>
+                                <li class="divider"></li>
+                                <li><a th:href="@{/data/logout}">退出登录</a></li>
+                                <li class="divider"></li>
+                                <li><a th:href="@{/data/gotoTopicMessage}">话题数目</a></li>
+                                <li><a class="topic_info2">话题信息</a></li>
+                                <li><a th:href="@{/data/gotoScatter3D}">话题信息</a></li>
+                            </ul>
+                        </li>
+                        <li><a th:if="${session.loginUser != null}" th:text="${session.loginUser.userName}"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="mybody row" style="margin-bottom: 10px">
+        <!--<div class="col-lg-1"></div>-->
+        <div class="col-lg-12">
+            <table id="exampleTable" class="table table-hover" style="table-layout: fixed;">
+                <caption class="page-header">
+                    <h2>数据列表</h2>
+                    <input type="text" id="selectByTitle" class="form-control" style="width: 30%" th:text="${title!='' ? title : ''}" placeholder="请输入标题">
+                </caption>
+                <thead>
+                <tr>
+                    <th>标题</th>
+                    <th width="300px">微博正文</th>
+                    <th>创建时间</th>
+                    <th>转发</th>
+                    <th>评论</th>
+                    <th>点赞</th>
+                    <th>情感</th>
+                    <th width="200px">详情</th>
+                </tr>
+                </thead>
+                <tbody class="datas"></tbody>
+            </table>
+            <div id="Pagination" class="Pagination m-style">
+            </div>
+        </div>
+        <!--<div class="col-lg-1"></div>-->
+    </div>
+
+    <div class="myfoot container col-lg-12" style="background-color: rgba(0, 0, 0, 0.1);font-weight: bolder">
+        <div class="col-lg-2 col-md-offset-5">
+            <ul style="list-style-type:none">
+                <li>
+                    <p>Powered by:</p>
+                    <p>寒川环宇</p>
+                </li>
+                <li>
+                    <p>CopyRight@copy2020 <span th:if="${session.loginUser != null}" th:text="${session?.loginUser?.userName}"></span></p>
+                </li>
+                <li><a href="https://www.cnblogs.com/Hephaestus/">关于我们</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../static/js/jquery.pagination.js" th:src="@{/js/jquery.pagination.js}"></script>
+    <script src="../static/js/sweetalert.min.js" th:src="@{/js/sweetalert.min.js}"></script>
+    <script src="../static/js/drawing/echarts.min.js" th:src="@{/js/drawing/echarts.min.js}"></script>
+    <script src="../static/js/decimal.min.js" th:src="@{/js/decimal.min.js}"></script>
+    <script>
+    // 加载数据列表
+    $(function () {
+        $.ajax({
+            url: "/data/getdatalist",        //请求的url地址
+            type: "post",                    //请求方式
+            async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+            dataType: "json",                //返回格式为json
+            success: function (data) {          //请求成功后的回调函数
+                //console.log(data)
+                if(data.code.code == 99){
+                    // 显示其他数据
+                    showWeiboData(data.dataList);
+                    // 分页
+                    initPagination(data.myPage);
+                }
+
+            },
+            error: function () {               //请求失败后的回调函数
+                swal("失败", "失败了", "error")
+            }
+        });
+    });
+    //翻页插件初始化
+    function initPagination(myPage){
+        //alert(myPage.pages)
+        //console.log(myPage)
+        $("#Pagination").pagination({
+            current_page: 0, // 当前页从第一页开始（这里做了 -1 处理）
+            pageCount: myPage.pagesTotal,
+            num_edge_entries: 3, //边缘页数 两侧首尾分页条目数
+            num_display_entries: myPage.pageNum, //主体页数
+            items_per_page: myPage.pageSize, //每页显示个数
+            jump:true,        //是否开启跳转
+            jumpIptCls: 'jump-ipt', //文本框内容
+            jumpBtnCls: 'jump-btn', //跳转按钮
+            jumpBtn: '跳转', //跳转按钮文本
+            mode: 'fixed', //分页模式，unfixed：不固定页码数量，fixed：固定页码数量
+            count: 9, //mode为unfixed时显示当前选中页前后页数，mode为fixed显示页码总数
+            coping:true,         //是否开启首页和末页
+            homePage:'首页',
+            endPage:'末页',
+            prev_text: "前一页",
+            next_text: "后一页",
+            callback: pageSelectCallback
+        });
+    }
+    // 翻页插件回调 第一个参数 page 必填 第二个 占位 page 从0开始 所以每次＋1
+    function pageSelectCallback(api, jq){
+        //alert(api.getCurrent())
+        let title = $("#selectByTitle").val();
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: '/data/getPageData',      //提交到一般处理程序请求数据
+            data: {
+                "pageNum": api.getCurrent(),
+                "title": title
+            },
+            success: function(data) {
+                //后台服务返回数据，重新加载数据
+                showWeiboData(data.dataList);
+            }
+        });
+    }
+
+    // 显示微博数据信息
+    function showWeiboData(myData){
+        let str = "";
+        $.each(myData, function(index,weibo){
+            let emotion;
+            if(weibo.positive>0.6 || weibo.weiboemotion==="正面"){
+                emotion = "正面"
+            } else {
+                emotion = "负面"
+            }
+            str += `<tr>
+                        <input class="messageid" type="hidden" value="${weibo.messageid}">
+                        <td class="datatitle"><span class="showall" data-toggle="popover" data-placement="left" data-trigger="hover" data-showall="${weibo.title}">${weibo.title}</span></td>
+                        <td>
+                            <a class="showall" data-toggle="popover" data-placement="left" data-trigger="hover" href="${weibo.messageurl}" data-showall="${weibo.text}">${weibo.text}</a>
+                        </td>
+                        <td><span class="showall" data-toggle="popover" data-placement="left" data-trigger="hover" data-showall="${weibo.createtime}">${weibo.createtime}</span></td>
+                        <td>${weibo.repostscount}</td>
+                        <td>${weibo.commentscount}</td>
+                        <td>${weibo.attitudescount}</td>
+                        <td><span class="bind_hover_card" data-value="${weibo.positive}" data-toggle="popover" data-placement="top" data-trigger="hover"><u><i>${emotion}</i></u></span></td>
+                        <td>
+                            <span class='commentinfo btn btn-secondary'><i class="glyphicon glyphicon-link"></i>查看评论</span>
+                            <span class='datainfo btn btn-secondary'><i class="glyphicon glyphicon-link"></i>可视化</span>
+                        </td>
+                    </tr>`
+        })
+        $(".datas").html(str);
+    }
+
+    // 给动态生成的标签绑定事件
+    $(".datas").on("click", "tr .datainfo", function () {
+        thetitle = $(this).parent().siblings(".datatitle").text()
+        window.location.href = "/data/gotolocation?title=" + thetitle;
+    });
+
+    // 给动态生成的标签绑定事件
+    $(".datas").on("click", "tr .commentinfo", function () {
+        let messageid = $(this).parent().siblings(".messageid").val()
+        //alert(messageid)
+        window.location.href = "/data/gotocommentinfo?messageId=" + messageid;
+    });
+
+    /*按标题查找*/
+    $("#selectByTitle").keydown(function(event){
+        if(event.keyCode ==13){
+            let title = $("#selectByTitle").val();
+            if (title!=null && title!='') {
+                $.ajax({
+                    url: "/data/getdatalist",        //请求的url地址
+                    type: "post",                    //请求方式
+                    data: {"title" : title},
+                    async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                    dataType: "json",                //返回格式为json
+                    success: function (data) {          //请求成功后的回调函数
+                        //console.log(data)
+                        if(data.code.code == 99){
+                            // 显示其他数据
+                            showWeiboData(data.dataList);
+                            // 分页
+                            initPagination(data.myPage);
+                        }
+
+                    },
+                    error: function () {               //请求失败后的回调函数
+                        swal("失败", "失败了", "error")
+                    }
+                });
+            }
+        }
+    })
+
+    $(".topic_info2").on("click", function () {
+        window.location.href = "/data/goto3DSurface";
+    })
+
+    /**************鼠标悬浮显示全部文字****************/
+    /*
+    $(".datas").on('mouseover',"tr .showall", function () {
+        let _this = $(this)
+        //alert(_this.data('showall'))
+        _this.popover({
+            content: _this.data('showall'),
+            animation: false,
+            delay:{show:500, hide:100},
+        })
+        _this.popover('show')
+    })
+    */
+    /**************鼠标悬浮显示全部文字结束****************/
+
+    /*************饼图******************/
+    $(".datas").on('mouseover',"tr td .bind_hover_card", function () {
+        $(this).popover({
+            html : true,
+            title: '评论感情占比',
+            delay:{show:500, hide:100},
+            content: `<div id="drawCustomizedPie" style="width:200px;height:150px"></div>`,
+            animation: false
+        })
+        $(this).popover('show')
+        let emotion = $(this).data('value').toFixed(4)
+        drawCustomizedPie(emotion)
+    })
+
+    function drawCustomizedPie(emotion) {
+        //console.log(emotion + "画饼图")
+        let _emotion = new Decimal(1).sub(new Decimal(emotion)).valueOf()
+        option = {
+            //backgroundColor: '#2c343c',
+            title: {
+                text: '',
+                left: 'center',
+                top: 0,
+                textStyle: {
+                    color: '#cccccc'
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            /*visualMap: {
+                show: false,
+                min: 80,
+                max: 600,
+                inRange: {
+                    colorLightness: [0, 1]
+                }
+            },*/
+            series: [
+                {
+                    name: '情感',
+                    type: 'pie',
+                    radius: '100%',   //饼图的半径大小
+                    center: ['50%', '50%'],   //饼图的位置
+                    data: [
+                        {value: emotion, name: '正面', itemStyle:{normal:{color:'#ff6122'}} },
+                        {value: _emotion, name: '负面', itemStyle:{normal:{color:'#3efaea'}} },
+                    ].sort(function (a, b) { return a.value - b.value; }),
+                    roseType: 'radius',
+                    label: {
+                        color: 'rgba(0,0,0,0.9)', //图标颜色
+                        normal : {
+                            formatter: '{b} : {c} ({d}%) \n\n',
+                            textStyle : {
+                                fontWeight : 'normal',
+                                fontSize : 12
+                            },
+                            position: 'inner'       // 文字放到图表内部
+                        },
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false  // 去掉指示线
+                        }
+                        /*lineStyle: {
+                            color: 'rgba(0,0,0,0.6)'  //线条颜色
+                        },
+                        smooth: 0.2,
+                        length: 5,
+                        length2: 10*/
+                    },
+                    itemStyle: {
+                        color: '#c23531',
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(245,199,199,0.5)'   //阴影颜色
+                    },
+
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animationDelay: function (idx) {
+                        return Math.random() * 200;
+                    }
+                }
+            ]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('drawCustomizedPie'));
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(option);
+    }
+    /*************饼图结束******************/
+
+    </script>
+
+</body>
+</html>

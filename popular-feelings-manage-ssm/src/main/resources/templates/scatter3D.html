@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div id="scatter3D" style="height: 580px;width: 100%">
+
+    </div>
+
+    <script src="../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script src="../static/js/drawing/echarts.min.js" th:src="@{/js/drawing/echarts.min.js}"></script>
+    <script src="../static/js/drawing/echarts-gl.js" th:src="@{/js/drawing/echarts-gl.js}"></script>
+    <script th:inline="javascript">
+        $(function () {
+            let weibos = [[${weibos}]]
+            drawScatter3D(weibos)
+            //console.log(weibos)
+
+            //drawScatter3D('')
+        })
+    </script>
+    <script>
+        function drawScatter3D(weibos) {
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('scatter3D'));
+
+            var data = ['转发', '评论', '点赞', '标题', '微博id'];
+            $.each(weibos, function(index,weibo){
+                data.push([weibo.repostscount, weibo.commentscount, weibo.attitudescount, weibo.title, weibo.messageid]);
+            })
+
+            var sizeValue = '57%';
+            var symbolSize = 2.5;
+            option = {
+                tooltip: {},
+                grid3D: {
+                    width: '50%'
+                },
+                xAxis3D: {},
+                yAxis3D: {},
+                zAxis3D: {},
+                grid: [
+                    {left: '50%', width: '20%', bottom: sizeValue},
+                    {left: '75%', width: '20%', bottom: sizeValue},
+                    {left: '50%', width: '20%',  top: sizeValue},
+                    {left: '75%', width: '20%', top: sizeValue}
+                ],
+                xAxis: [
+                    {type: 'value', gridIndex: 0, name: '转发', axisLabel: {rotate: 50, interval: 0}},
+                    {type: 'category', gridIndex: 1, name: '标题', boundaryGap: false, axisLabel: {/*rotate: 50, interval: 0*/ formatter: function () {return ''}} },
+                    {type: 'value', gridIndex: 2, name: '转发', axisLabel: {rotate: 50, interval: 0}},
+                    {type: 'value', gridIndex: 3, name: '评论', axisLabel: {rotate: 50, interval: 0}}
+                ],
+                yAxis: [
+                    {type: 'value', gridIndex: 0, name: '评论'},
+                    {type: 'value', gridIndex: 1, name: '转发'},
+                    {type: 'value', gridIndex: 2, name: '点赞'},
+                    {type: 'value', gridIndex: 3, name: '点赞'}
+                ],
+                dataset: {
+                    dimensions: [
+                        '转发',
+                        '评论',
+                        '点赞',
+                        '标题',
+                        {name: '微博id', type: 'ordinal'}
+                    ],
+                    source: data
+                },
+                series: [
+                    {
+                        type: 'scatter3D',
+                        symbolSize: 3,
+                        encode: {
+                            x: '点赞',
+                            y: '评论',
+                            z: '转发',
+                            tooltip: [0, 1, 2, 3, 4]
+                        }
+                    },
+
+                    {
+                        type: 'scatter',
+                        symbolSize: symbolSize,
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        encode: {
+                            x: '转发',
+                            y: '评论',
+                            tooltip: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        type: 'scatter',
+                        symbolSize: symbolSize,
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        encode: {
+                            x: '标题',
+                            y: '转发',
+                            tooltip: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        type: 'scatter',
+                        symbolSize: symbolSize,
+                        xAxisIndex: 2,
+                        yAxisIndex: 2,
+                        encode: {
+                            x: '转发',
+                            y: '点赞',
+                            tooltip: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        type: 'scatter',
+                        symbolSize: symbolSize,
+                        xAxisIndex: 3,
+                        yAxisIndex: 3,
+                        encode: {
+                            x: '评论',
+                            y: '点赞',
+                            tooltip: [0, 1, 2, 3, 4]
+                        }
+                    }
+                ]
+            };
+
+            myChart.setOption(option);
+        }
+    </script>
+    <!--<script>
+        function drawScatter(weibos) {
+            //初始化echarts实例
+            //var myChart = echarts.init(document.getElementById('scatter3D'));
+
+            //Income:Z轴;Life Expectancy:Y轴;Country:X轴
+            //井深:Z轴;Y坐标:Y轴;X坐标:X轴
+            var jsonData=[["井深","Y坐标","人口密度","X坐标","Year"],
+                [10,14,11,2014],
+                [11,25,22,2015],
+                [12,36,33,2016],
+                [13,47,40,2017]
+            ];
+            setOption(jsonData, 0, 100, 0, 100, '')
+
+            function setOption(datas,x_min,x_max,y_min,y_max,xuanzhuan){
+                var myChart = echarts.init(document.getElementById('scatter3D'));
+                option = {
+                    grid3D:  {
+                        boxWidth:  60,						//图件宽
+                        boxHeight: 122,						//图件高
+                        boxDepth:  60,						//图件长
+                        height: '100%',						//容器高
+                        width: '100%',						//容器宽
+                        bottom: 'auto',						//3D图与下容器的距离
+                        top:'auto',			   				//3D图与上容器的距离
+                        axisLine:{
+                            lineStyle:{
+                                color:'yellow' 				//坐标轴轴线颜色
+                            }
+                        },
+                        splitLine:{
+                            lineStyle:{
+                                color:'#222'  				//分割线颜色
+                            }
+                        },
+                        axisPointer:{
+                            lineStyle:{
+                                color:'#efe' 				//鼠标滑过分割线颜色
+                            }
+                        },
+                        environment: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: '#00aaff' 	// 天空颜色
+                        }, {
+                            offset: 0.7, color: '#998866' // 地面颜色
+                        }, {
+                            offset: 1, color: '#998866' 	// 地面颜色
+                        }], false),
+                        postEffect:{
+                            enable:false					//开启特效
+                        },
+                        viewControl:{
+                            projection: 'perspective',		//默认为透视投影'perspective'，也支持设置为正交投影'orthographic'
+                            autoRotate: true,				//自动旋转
+                            autoRotateDirection: 'ccw',     //默认是 'cw' 从上往下看是顺时针 也可以取 'ccw'逆时针
+                            autoRotateSpeed: 4,				//默认10 自转速度
+                            autoRotateAfterStill: 5,		//默认3秒 鼠标静止操作后恢复自动旋转的时间间隔
+                            damping: 0.8,					//鼠标进行旋转，缩放等操作时的迟滞因子，在大于 0 的时候鼠标在停止操作后，视角仍会因为一定的惯性继续运动（旋转和缩放）
+                            animation: true,				//是否开启动画
+                            animationDurationUpdate: 1000,	//过渡动画的时长
+                            animationEasingUpdate: 'cubicInOut' //过渡动画的缓动效果
+                        },
+                        postEffect:{
+                            enable:false					//是否开启后处理特效，默认关闭 不能开  浏览器会卡
+                        }
+                    },
+                    xAxis3D: {
+                        show: true,
+                        name: '南北-X',
+                        nameTextStyle:{
+                            color: 'lime',
+                            fontWeight: 'normal'
+                        },
+                        min:x_min,
+                        max:x_max
+                    },
+                    yAxis3D: {
+                        show: true,
+                        name: '东西-Y',
+                        nameTextStyle:{
+                            color: 'lime',
+                            fontWeight: 'normal'
+                        },
+                        min:y_min,
+                        max:x_max
+                    },
+                    zAxis3D: {
+                        show: true,
+                        name: '井深-Z',
+                        nameTextStyle:{
+                            color: 'lime',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    dataset: {
+                        dimensions: [
+                            '井深',
+                            'Y坐标',
+                            'X坐标',
+                            {name: '井名', type: 'ordinal'}
+                        ],
+                        source: datas
+                    },
+                    series: [
+                        {
+                            type: 'scatter3D',				//3D类型
+                            name: '测试',				    //名字
+                            //coordinateSystem: 'grid3D',	//使用地球三维地理坐标系
+                            //grid3DIndex: 0,				//坐标轴使用的 geo3D 组件的索引
+                            symbol:'diamond',				//点形状 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                            symbolSize: 3.5,  				//点大小
+                            itemStyle: {
+                                color:'white',		   		//点颜色
+                                borderColor: 'green',  		//点边框颜色
+                                opacity: 1,            		//点的透明度 1不透明
+                                borderWidth: 0.5       		//图形描边宽度
+                            },
+                            label:{
+                                show:false, 				//是否显示点上面的标签，默认false
+                                distance: 15,				//标签与点的距离
+                                position:'left',      		//标签位置
+                                textStyle:{
+                                    color:'black', 			//文字颜色
+                                    borderWidth:0,  		//标签上边框宽度
+                                    borderColor:'white',   	//边框颜色
+                                    fontFamily:'宋体',		//标签字体
+                                    fontSize:14,			//字体大小
+                                    fontWeight:'normal'		//是否加粗
+                                }
+                            },
+                            emphasis:{
+                                itemStyle:{
+                                    color:'green',			//鼠标移到点上的颜色变化
+                                    opacity:1,				//不透明度
+                                    borderWidth:0,			//图像描边宽度
+                                    borderColor:'#fff' 		//图形描边颜色
+                                },
+                                label:{
+                                    show:true,				//鼠标移动到点上是否显示标签
+                                    distance: 15,			//标签与点的距离
+                                    position:'left',      	//标签位置
+                                    textStyle:{
+                                        color:'black', 		//文字颜色
+                                        borderWidth:0,  	//标签上边框宽度
+                                        borderColor:'white',//边框颜色
+                                        fontFamily:'宋体',	//标签字体
+                                        fontSize:14,		//字体大小
+                                        fontWeight:'normal'	//是否加粗
+                                    }
+                                }
+                            },
+                            blendMode:'lighter',			//混合模式默认使用的'source-over'是通过 alpha 混合，而'lighter'是叠加模式，该模式可以让数据集中的区域因为叠加而产生高亮的效果。
+                            silent:false,					//图形是否不响应和触发鼠标事件，默认为 false，即响应和触发鼠标事件。
+                            animation:true,					//是否开启动画
+                            animationDurationUpdate:500,	//过渡动画的时长
+                            animationEasingUpdate:'cubicOut',//过渡动画的缓动效果
+                            encode: {
+                                x: 'X坐标',
+                                y: 'Y坐标',
+                                z: '井深',
+                                tooltip: [0, 1, 2, 3, 4]
+                            }
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            }
+        }
+    </script>-->
+</body>
+</html>

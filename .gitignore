@@ -1,0 +1,8 @@
+.idea
+data
+out
+checkpoint
+*.iml
+/popular-feelings-manage-SentimentSubsystem/target/
+*.class
+**/target

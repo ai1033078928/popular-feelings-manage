@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbu.dao.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.hrbu.model.Comment">
+    <!--@mbg.generated-->
+    <!--@Table `comment`-->
+    <result column="messageId" jdbcType="VARCHAR" property="messageid" />
+    <result column="commentEmotion" jdbcType="VARCHAR" property="commentemotion" />
+    <result column="commentBody" jdbcType="LONGVARCHAR" property="commentbody" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    messageId, commentEmotion, commentBody, `uid`
+  </sql>
+
+  <select id="selectByMessageId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select  *
+    from comment
+    <where>
+      messageId = #{myMessageId,jdbcType=VARCHAR}
+    </where>
+  </select>
+
+  <insert id="insert" parameterType="com.hrbu.model.Comment">
+    <!--@mbg.generated-->
+    insert into `comment` (messageId, commentEmotion, commentBody, 
+      `uid`)
+    values (#{messageid,jdbcType=VARCHAR}, #{commentemotion,jdbcType=VARCHAR}, #{commentbody,jdbcType=LONGVARCHAR}, 
+      #{uid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hrbu.model.Comment">
+    <!--@mbg.generated-->
+    insert into `comment`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        messageId,
+      </if>
+      <if test="commentemotion != null">
+        commentEmotion,
+      </if>
+      <if test="commentbody != null">
+        commentBody,
+      </if>
+      <if test="uid != null">
+        `uid`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="messageid != null">
+        #{messageid,jdbcType=VARCHAR},
+      </if>
+      <if test="commentemotion != null">
+        #{commentemotion,jdbcType=VARCHAR},
+      </if>
+      <if test="commentbody != null">
+        #{commentbody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

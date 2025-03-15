@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbu.dao.UserinfoMapper">
+  <resultMap id="BaseResultMap" type="com.hrbu.model.Userinfo">
+    <!--@mbg.generated-->
+    <!--@Table userinfo-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="uDesc" jdbcType="VARCHAR" property="udesc" />
+    <result column="followCount" jdbcType="INTEGER" property="followcount" />
+    <result column="followersCount" jdbcType="INTEGER" property="followerscount" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="verified" jdbcType="BIT" property="verified" />
+    <result column="verifiedReason" jdbcType="VARCHAR" property="verifiedreason" />
+    <result column="uUrl" jdbcType="VARCHAR" property="uurl" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, `name`, uDesc, followCount, followersCount, gender, verified, verifiedReason, 
+    uUrl, `location`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from userinfo
+    where `uid` = #{uid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from userinfo
+    where `uid` = #{uid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hrbu.model.Userinfo">
+    <!--@mbg.generated-->
+    insert into userinfo (`uid`, `name`, uDesc, 
+      followCount, followersCount, gender, 
+      verified, verifiedReason, uUrl, 
+      `location`)
+    values (#{uid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{udesc,jdbcType=VARCHAR}, 
+      #{followcount,jdbcType=INTEGER}, #{followerscount,jdbcType=INTEGER}, #{gender,jdbcType=VARCHAR}, 
+      #{verified,jdbcType=BIT}, #{verifiedreason,jdbcType=VARCHAR}, #{uurl,jdbcType=VARCHAR}, 
+      #{location,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hrbu.model.Userinfo">
+    <!--@mbg.generated-->
+    insert into userinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        `uid`,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="udesc != null">
+        uDesc,
+      </if>
+      <if test="followcount != null">
+        followCount,
+      </if>
+      <if test="followerscount != null">
+        followersCount,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="verified != null">
+        verified,
+      </if>
+      <if test="verifiedreason != null">
+        verifiedReason,
+      </if>
+      <if test="uurl != null">
+        uUrl,
+      </if>
+      <if test="location != null">
+        `location`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uid != null">
+        #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="udesc != null">
+        #{udesc,jdbcType=VARCHAR},
+      </if>
+      <if test="followcount != null">
+        #{followcount,jdbcType=INTEGER},
+      </if>
+      <if test="followerscount != null">
+        #{followerscount,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="verified != null">
+        #{verified,jdbcType=BIT},
+      </if>
+      <if test="verifiedreason != null">
+        #{verifiedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="uurl != null">
+        #{uurl,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hrbu.model.Userinfo">
+    <!--@mbg.generated-->
+    update userinfo
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="udesc != null">
+        uDesc = #{udesc,jdbcType=VARCHAR},
+      </if>
+      <if test="followcount != null">
+        followCount = #{followcount,jdbcType=INTEGER},
+      </if>
+      <if test="followerscount != null">
+        followersCount = #{followerscount,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="verified != null">
+        verified = #{verified,jdbcType=BIT},
+      </if>
+      <if test="verifiedreason != null">
+        verifiedReason = #{verifiedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="uurl != null">
+        uUrl = #{uurl,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        `location` = #{location,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where `uid` = #{uid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hrbu.model.Userinfo">
+    <!--@mbg.generated-->
+    update userinfo
+    set `name` = #{name,jdbcType=VARCHAR},
+      uDesc = #{udesc,jdbcType=VARCHAR},
+      followCount = #{followcount,jdbcType=INTEGER},
+      followersCount = #{followerscount,jdbcType=INTEGER},
+      gender = #{gender,jdbcType=VARCHAR},
+      verified = #{verified,jdbcType=BIT},
+      verifiedReason = #{verifiedreason,jdbcType=VARCHAR},
+      uUrl = #{uurl,jdbcType=VARCHAR},
+      `location` = #{location,jdbcType=VARCHAR}
+    where `uid` = #{uid,jdbcType=VARCHAR}
+  </update>
+</mapper>

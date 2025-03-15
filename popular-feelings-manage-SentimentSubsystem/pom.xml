@@ -65,6 +65,46 @@
                     <artifactId>spark-streaming-kafka-0-10_2.12</artifactId>
                     <version>${spark.version}</version>
                 </dependency>
+
+                <!--汉语言处理包-->
+                <!-- https://mvnrepository.com/artifact/com.hankcs/hanlp -->
+                <dependency>
+                    <groupId>com.hankcs</groupId>
+                    <artifactId>hanlp</artifactId>
+                    <version>portable-1.7.8</version>
+                </dependency>
+
+                <!--mysql驱动-->
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>8.0.20</version>
+                </dependency>
+
+                <!--Start of HBase-->
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-client</artifactId>
+                    <version>${hbase.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-server</artifactId>
+                    <version>${hbase.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.hbase</groupId>
+                    <artifactId>hbase-common</artifactId>
+                    <version>${hbase.version}</version>
+                </dependency>
+                <!--End of HBase-->
+
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>${junit.version}</version>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
     <!--</dependencyManagement>-->
 

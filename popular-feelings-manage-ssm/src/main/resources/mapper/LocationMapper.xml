@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbu.dao.LocationMapper">
+  <resultMap id="BaseResultMap" type="com.hrbu.model.Location">
+    <!--@mbg.generated-->
+    <!--@Table `location`-->
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="c_11" jdbcType="INTEGER" property="c11" />
+    <result column="c_12" jdbcType="INTEGER" property="c12" />
+    <result column="c_13" jdbcType="INTEGER" property="c13" />
+    <result column="c_14" jdbcType="INTEGER" property="c14" />
+    <result column="c_15" jdbcType="INTEGER" property="c15" />
+    <result column="c_21" jdbcType="INTEGER" property="c21" />
+    <result column="c_22" jdbcType="INTEGER" property="c22" />
+    <result column="c_23" jdbcType="INTEGER" property="c23" />
+    <result column="c_31" jdbcType="INTEGER" property="c31" />
+    <result column="c_32" jdbcType="INTEGER" property="c32" />
+    <result column="c_33" jdbcType="INTEGER" property="c33" />
+    <result column="c_34" jdbcType="INTEGER" property="c34" />
+    <result column="c_35" jdbcType="INTEGER" property="c35" />
+    <result column="c_36" jdbcType="INTEGER" property="c36" />
+    <result column="c_37" jdbcType="INTEGER" property="c37" />
+    <result column="c_41" jdbcType="INTEGER" property="c41" />
+    <result column="c_42" jdbcType="INTEGER" property="c42" />
+    <result column="c_43" jdbcType="INTEGER" property="c43" />
+    <result column="c_44" jdbcType="INTEGER" property="c44" />
+    <result column="c_45" jdbcType="INTEGER" property="c45" />
+    <result column="c_46" jdbcType="INTEGER" property="c46" />
+    <result column="c_50" jdbcType="INTEGER" property="c50" />
+    <result column="c_51" jdbcType="INTEGER" property="c51" />
+    <result column="c_52" jdbcType="INTEGER" property="c52" />
+    <result column="c_53" jdbcType="INTEGER" property="c53" />
+    <result column="c_54" jdbcType="INTEGER" property="c54" />
+    <result column="c_61" jdbcType="INTEGER" property="c61" />
+    <result column="c_62" jdbcType="INTEGER" property="c62" />
+    <result column="c_63" jdbcType="INTEGER" property="c63" />
+    <result column="c_64" jdbcType="INTEGER" property="c64" />
+    <result column="c_65" jdbcType="INTEGER" property="c65" />
+    <result column="c_71" jdbcType="INTEGER" property="c71" />
+    <result column="c_81" jdbcType="INTEGER" property="c81" />
+    <result column="c_82" jdbcType="INTEGER" property="c82" />
+    <result column="c_99" jdbcType="INTEGER" property="c99" />
+    <result column="c_100" jdbcType="INTEGER" property="c100" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    title, c_11, c_12, c_13, c_14, c_15, c_21, c_22, c_23, c_31, c_32, c_33, c_34, c_35, 
+    c_36, c_37, c_41, c_42, c_43, c_44, c_45, c_46, c_50, c_51, c_52, c_53, c_54, c_61, 
+    c_62, c_63, c_64, c_65, c_71, c_81, c_82, c_99, c_100
+  </sql>
+  <select id="selectByTitle" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select *
+    from `location`
+    where title = #{title,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert" parameterType="com.hrbu.model.Location">
+    <!--@mbg.generated-->
+    insert into `location` (title, c_11, c_12, 
+      c_13, c_14, c_15, c_21, 
+      c_22, c_23, c_31, c_32, 
+      c_33, c_34, c_35, c_36, 
+      c_37, c_41, c_42, c_43, 
+      c_44, c_45, c_46, c_50, 
+      c_51, c_52, c_53, c_54, 
+      c_61, c_62, c_63, c_64, 
+      c_65, c_71, c_81, c_82, 
+      c_99, c_100)
+    values (#{title,jdbcType=VARCHAR}, #{c11,jdbcType=INTEGER}, #{c12,jdbcType=INTEGER}, 
+      #{c13,jdbcType=INTEGER}, #{c14,jdbcType=INTEGER}, #{c15,jdbcType=INTEGER}, #{c21,jdbcType=INTEGER}, 
+      #{c22,jdbcType=INTEGER}, #{c23,jdbcType=INTEGER}, #{c31,jdbcType=INTEGER}, #{c32,jdbcType=INTEGER}, 
+      #{c33,jdbcType=INTEGER}, #{c34,jdbcType=INTEGER}, #{c35,jdbcType=INTEGER}, #{c36,jdbcType=INTEGER}, 
+      #{c37,jdbcType=INTEGER}, #{c41,jdbcType=INTEGER}, #{c42,jdbcType=INTEGER}, #{c43,jdbcType=INTEGER}, 
+      #{c44,jdbcType=INTEGER}, #{c45,jdbcType=INTEGER}, #{c46,jdbcType=INTEGER}, #{c50,jdbcType=INTEGER}, 
+      #{c51,jdbcType=INTEGER}, #{c52,jdbcType=INTEGER}, #{c53,jdbcType=INTEGER}, #{c54,jdbcType=INTEGER}, 
+      #{c61,jdbcType=INTEGER}, #{c62,jdbcType=INTEGER}, #{c63,jdbcType=INTEGER}, #{c64,jdbcType=INTEGER}, 
+      #{c65,jdbcType=INTEGER}, #{c71,jdbcType=INTEGER}, #{c81,jdbcType=INTEGER}, #{c82,jdbcType=INTEGER}, 
+      #{c99,jdbcType=INTEGER}, #{c100,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hrbu.model.Location">
+    <!--@mbg.generated-->
+    insert into `location`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="c11 != null">
+        c_11,
+      </if>
+      <if test="c12 != null">
+        c_12,
+      </if>
+      <if test="c13 != null">
+        c_13,
+      </if>
+      <if test="c14 != null">
+        c_14,
+      </if>
+      <if test="c15 != null">
+        c_15,
+      </if>
+      <if test="c21 != null">
+        c_21,
+      </if>
+      <if test="c22 != null">
+        c_22,
+      </if>
+      <if test="c23 != null">
+        c_23,
+      </if>
+      <if test="c31 != null">
+        c_31,
+      </if>
+      <if test="c32 != null">
+        c_32,
+      </if>
+      <if test="c33 != null">
+        c_33,
+      </if>
+      <if test="c34 != null">
+        c_34,
+      </if>
+      <if test="c35 != null">
+        c_35,
+      </if>
+      <if test="c36 != null">
+        c_36,
+      </if>
+      <if test="c37 != null">
+        c_37,
+      </if>
+      <if test="c41 != null">
+        c_41,
+      </if>
+      <if test="c42 != null">
+        c_42,
+      </if>
+      <if test="c43 != null">
+        c_43,
+      </if>
+      <if test="c44 != null">
+        c_44,
+      </if>
+      <if test="c45 != null">
+        c_45,
+      </if>
+      <if test="c46 != null">
+        c_46,
+      </if>
+      <if test="c50 != null">
+        c_50,
+      </if>
+      <if test="c51 != null">
+        c_51,
+      </if>
+      <if test="c52 != null">
+        c_52,
+      </if>
+      <if test="c53 != null">
+        c_53,
+      </if>
+      <if test="c54 != null">
+        c_54,
+      </if>
+      <if test="c61 != null">
+        c_61,
+      </if>
+      <if test="c62 != null">
+        c_62,
+      </if>
+      <if test="c63 != null">
+        c_63,
+      </if>
+      <if test="c64 != null">
+        c_64,
+      </if>
+      <if test="c65 != null">
+        c_65,
+      </if>
+      <if test="c71 != null">
+        c_71,
+      </if>
+      <if test="c81 != null">
+        c_81,
+      </if>
+      <if test="c82 != null">
+        c_82,
+      </if>
+      <if test="c99 != null">
+        c_99,
+      </if>
+      <if test="c100 != null">
+        c_100,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="c11 != null">
+        #{c11,jdbcType=INTEGER},
+      </if>
+      <if test="c12 != null">
+        #{c12,jdbcType=INTEGER},
+      </if>
+      <if test="c13 != null">
+        #{c13,jdbcType=INTEGER},
+      </if>
+      <if test="c14 != null">
+        #{c14,jdbcType=INTEGER},
+      </if>
+      <if test="c15 != null">
+        #{c15,jdbcType=INTEGER},
+      </if>
+      <if test="c21 != null">
+        #{c21,jdbcType=INTEGER},
+      </if>
+      <if test="c22 != null">
+        #{c22,jdbcType=INTEGER},
+      </if>
+      <if test="c23 != null">
+        #{c23,jdbcType=INTEGER},
+      </if>
+      <if test="c31 != null">
+        #{c31,jdbcType=INTEGER},
+      </if>
+      <if test="c32 != null">
+        #{c32,jdbcType=INTEGER},
+      </if>
+      <if test="c33 != null">
+        #{c33,jdbcType=INTEGER},
+      </if>
+      <if test="c34 != null">
+        #{c34,jdbcType=INTEGER},
+      </if>
+      <if test="c35 != null">
+        #{c35,jdbcType=INTEGER},
+      </if>
+      <if test="c36 != null">
+        #{c36,jdbcType=INTEGER},
+      </if>
+      <if test="c37 != null">
+        #{c37,jdbcType=INTEGER},
+      </if>
+      <if test="c41 != null">
+        #{c41,jdbcType=INTEGER},
+      </if>
+      <if test="c42 != null">
+        #{c42,jdbcType=INTEGER},
+      </if>
+      <if test="c43 != null">
+        #{c43,jdbcType=INTEGER},
+      </if>
+      <if test="c44 != null">
+        #{c44,jdbcType=INTEGER},
+      </if>
+      <if test="c45 != null">
+        #{c45,jdbcType=INTEGER},
+      </if>
+      <if test="c46 != null">
+        #{c46,jdbcType=INTEGER},
+      </if>
+      <if test="c50 != null">
+        #{c50,jdbcType=INTEGER},
+      </if>
+      <if test="c51 != null">
+        #{c51,jdbcType=INTEGER},
+      </if>
+      <if test="c52 != null">
+        #{c52,jdbcType=INTEGER},
+      </if>
+      <if test="c53 != null">
+        #{c53,jdbcType=INTEGER},
+      </if>
+      <if test="c54 != null">
+        #{c54,jdbcType=INTEGER},
+      </if>
+      <if test="c61 != null">
+        #{c61,jdbcType=INTEGER},
+      </if>
+      <if test="c62 != null">
+        #{c62,jdbcType=INTEGER},
+      </if>
+      <if test="c63 != null">
+        #{c63,jdbcType=INTEGER},
+      </if>
+      <if test="c64 != null">
+        #{c64,jdbcType=INTEGER},
+      </if>
+      <if test="c65 != null">
+        #{c65,jdbcType=INTEGER},
+      </if>
+      <if test="c71 != null">
+        #{c71,jdbcType=INTEGER},
+      </if>
+      <if test="c81 != null">
+        #{c81,jdbcType=INTEGER},
+      </if>
+      <if test="c82 != null">
+        #{c82,jdbcType=INTEGER},
+      </if>
+      <if test="c99 != null">
+        #{c99,jdbcType=INTEGER},
+      </if>
+      <if test="c100 != null">
+        #{c100,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

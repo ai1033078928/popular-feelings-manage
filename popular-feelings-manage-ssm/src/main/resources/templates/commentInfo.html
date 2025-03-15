@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../static/css/sweetalert2.min.css" th:href="@{/css/sweetalert2.min.css}"/>
+    <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        .table tbody tr td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="col-lg-12">
+        <!--导航栏: https://www.runoob.com/bootstrap/bootstrap-navbar.html-->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="col-lg-9 navbar-header">
+                    <a class="navbar-brand" href="#">舆情分析</a>
+                </div>
+                <div class="col-lg-3">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a th:href="@{/user/login}">登录</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/user/register}">注册</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                展开
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/data/datalist}">微博信息</a></li>
+                                <li><a th:href="@{/data/topnlist}">热点话题</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">分离的链接</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">另一个分离的链接</a></li>
+                            </ul>
+                        </li>
+                        <li><a th:if="${session.loginUser != null}" th:text="${session.loginUser.userName}"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-1"></div>
+
+        <div class="col-lg-10">
+            <table id="topnTable" class="table table-hover" style="table-layout: fixed;">
+                <caption class="page-header">
+                    <h2>评论信息</h2>
+                </caption>
+                <thead>
+                <tr>
+                    <th class="col-lg-1">微博id</th>
+                    <th class="col-lg-7">评论正文</th>
+                    <th class="col-lg-1">评论感情</th>
+                    <th class="col-lg-1">评论用户id</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="commnetInfo:${commnetInfoList}">
+                        <td><span th:text="${commnetInfo.messageid}"></span></td>
+                        <td><span th:text="${commnetInfo.commentbody}"></span></td>
+                        <td><span th:text="${commnetInfo.commentemotion}"></span></td>
+                        <td><span class="userInfo" th:text="${commnetInfo.uid}"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="gridSystemModalLabel">评论用户信息</h3>
+                </div>
+                <div class="modal-body text-left">
+                    <input id="uid" type="hidden">
+                    <div class="row mt-3">
+                        <div class="col-md-2">用户昵称:</div>
+                        <div class="col-md-4">
+                            <input type="text" id="name" readonly="readonly">
+                        </div><!--偏移??col-md-offset-4-->
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">用户简介:</div>
+                        <div class="col-md-4">
+                            <textarea id="uDesc" readonly="readonly"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">关注数:</div>
+                        <div class="col-md-4">
+                            <input type="text" id="followCount" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">粉丝数:</div>
+                        <div class="col-md-4">
+                            <input type="text" id="followersCount" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">性别:</div>
+                        <div class="col-md-6">
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" value="m" name="sex">男性
+                            </label>
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" value="f" name="sex">女性
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">是否认证:</div>
+                        <div class="col-md-4">
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" name="verified">是
+                            </label>
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" name="verified">否
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">认证原因:</div>
+                        <div class="col-md-4">
+                            <input type="text" id="verifiedReason" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">用户主页:</div>
+                        <div class="col-md-4">
+                            <a type="text" id="uUrl">点击跳转</a>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">地址:</div>
+                        <div class="col-md-4">
+                            <input type="text" id="location" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal_close btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="myfoot container col-lg-12" style="background-color: rgba(0, 0, 0, 0.1);font-weight: bolder">
+        <div class="col-lg-2 col-md-offset-5">
+            <ul style="list-style-type:none">
+                <li>
+                    <p>Powered by:</p>
+                    <p>寒川环宇</p>
+                </li>
+                <li>
+                    <p>CopyRight@copy2020<span th:if="${session.loginUser != null}" th:text="${session.loginUser.userName}"></span></p>
+                </li>
+                <li><a href="https://www.cnblogs.com/Hephaestus/">关于我们</a></li>
+            </ul>
+        </div>
+    </div>
+
+<script src="../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../static/js/sweetalert.min.js" th:src="@{/js/sweetalert.min.js}"></script>
+<script>
+    $(".userInfo").on("click", function () {
+        uid = $(this).text()
+        //alert(uid)
+        $.ajax({
+            url: "/data/selectUserInfo",        //请求的url地址
+            data: {"uid": uid},
+            type: "post",                    //请求方式
+            async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+            dataType: "json",                //返回格式为json
+            success: function (data) {          //请求成功后的回调函数
+                $("#uid").val(data.user.uid)
+                $("#name").val(data.user.name)
+                $("#uDesc").text(data.user.udesc)
+                $("#followCount").val(data.user.followcount)
+                $("#followersCount").val(data.user.followerscount)
+                if(data.user.gender == "m"){
+                    $("input[name='sex']:eq(0)").attr("checked", 'checked')
+                } else {
+                    $("input[name='sex']:eq(1)").attr("checked", 'checked')
+                }
+                if(data.user.verified == 1){
+                    $("input[name='verified']:eq(0)").attr("checked", 'checked')
+                } else {
+                    $("input[name='verified']:eq(1)").attr("checked", 'checked')
+                }
+                $("#verifiedReason").val(data.user.verifiedreason)
+                $("#uUrl").attr("href", data.user.uurl)
+                $("#location").val(data.user.location)
+                $("#myModal").modal("show")
+            },
+            error: function () {
+                swal("失败", "错误回调函数", "error");
+            }
+        })
+
+    })
+    $("#myModal .modal_close").on("click", function () {
+        $('#myModal').hide()
+        $('#myModal').on("hidden.bs.modal", function() {
+            $("#myModal input").val('')
+            //$("this").removeData("bs.modal");
+        });
+    })
+</script>
+
+</body>
+</html>

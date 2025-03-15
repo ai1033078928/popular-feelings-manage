@@ -20,12 +20,15 @@
         <slf4j.version>1.7.30</slf4j.version>
         <kafka.version>0.10.2.1</kafka.version>
         <spark.version>2.4.2</spark.version>
-        <scala.version>2.12.8</scala.version>
-        <!--        <spark.version>3.0.0-preview2</spark.version>-->
-        <!--        <scala.version>2.12.2</scala.version>-->
+        <!--<scala.version>2.12.8</scala.version>-->
+        <hbase.version>2.2.3</hbase.version>
+        <hadoop.version>2.9.2</hadoop.version>
+        <!--<spark.version>3.0.0-preview2</spark.version>-->
+        <scala.version>2.12.2</scala.version>
         <!--<redis.version>2.9.0</redis.version>-->
         <!--线性代数库-->
         <!--<jblas.version>1.2.4</jblas.version>-->
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <!--引入公有依赖-->
@@ -50,6 +53,15 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
+        </dependency>
+
+        <!--idea和本地win的Scala版本不同
+            mvn clean scala:compile compile package
+           在编译spark源码的时候报类似的错误然后在spark 文件夹下的pom.xml里加入如下依赖，源码编译就没有报错成功编译出来了-->
+        <dependency>
+            <groupId>net.alchim31.maven</groupId>
+            <artifactId>scala-maven-plugin</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 

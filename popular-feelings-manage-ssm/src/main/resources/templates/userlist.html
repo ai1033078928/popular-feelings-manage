@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" type="text/css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/sweetalert2.min.css" th:href="@{/css/sweetalert2.min.css}" />
+    <style>
+        .mt-3{
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!--导航栏: https://www.runoob.com/bootstrap/bootstrap-navbar.html-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="col-lg-9 navbar-header">
+                <a class="navbar-brand" href="index.html">舆情分析</a>
+            </div>
+            <div class="col-lg-3">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a th:href="@{/user/login}">登录</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/user/register}">注册</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            展开
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/data/datalist}">微博信息</a></li>
+                            <li><a th:href="@{/data/topnlist}">热点话题</a></li>
+                            <li class="divider"></li>
+                            <li><a th:href="@{/data/logout}">退出登录</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">另一个分离的链接</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row mt-3">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10">
+            <!--/*@thymesVar id="userlist" type="java.util.List"*/-->
+            <table class="table table-hover">
+                <caption class="page-header">
+                    <h2>用户列表</h2>
+                    <span class='add btn btn-primary'><i class="glyphicon glyphicon-plus"></i>新增</span>
+                </caption>
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>密码</th>
+                    <th>性别</th>
+                    <th>手机号</th>
+                    <th>邮箱</th>
+                    <th>地址</th>
+                    <th>注册时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody class="users">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="gridSystemModalLabel">用户信息</h3>
+                </div>
+                <div class="modal-body text-center">
+                    <input class="modal_userId" type="hidden" value="">
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">用户名:</div>
+                        <div class="col-md-4">
+                            <input type="text" class="user_name" placeholder="请输入用户名">
+                        </div><!--偏移??col-md-offset-4-->
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">密码:</div>
+                        <div class="col-md-4">
+                            <input type="text" class="user_password" placeholder="请设置密码">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">性别:</div>
+                        <div class="col-md-6">
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" value="男" name="sex">男性
+                            </label>
+                            <label class="radio-inline col-md-3">
+                                <input type="radio" value="女" name="sex">女性
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">手机号:</div>
+                        <div class="col-md-4">
+                            <input type="text" class="user_phone" placeholder="请输入手机号">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">邮箱:</div>
+                        <div class="col-md-4">
+                            <input type="text" class="user_email" placeholder="请输入邮箱">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2 col-md-offset-3">地址:</div>
+                        <div class="col-md-4">
+                            <input type="text" class="user_address" placeholder="请输入地址">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="my_close btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="save btn btn-primary">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="js/sweetalert.min.js" th:src="@{/js/sweetalert.min.js}"></script>
+
+    <script>
+        $(function () {
+            $.ajax({
+                url: "/user/list",        //请求的url地址
+                type:"post",                    //请求方式
+                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType:"json",                //返回格式为json
+                success:function(data){          //请求成功后的回调函数
+                    var str = "";
+                    if(data.code.code == 99){
+                        $.each(data.userList, function(index,user){
+                            str += `<tr><td value="${user.userName}">${user.userName}</td>` +
+                                    `<td value="${user.password}">${user.password}</td>` +
+                                    `<td value="${user.sex}">${user.sex}</td>` +
+                                    `<td value="${user.phone}">${user.phone}</td>` +
+                                    `<td value="${user.email}">${user.email}</td>` +
+                                    `<td value="${user.address}">${user.address}</td>` +
+                                    `<td value="${user.registrationTime}">${user.registrationTime}</td>` +
+                                    `<td>
+                                         <input type="hidden" class="thisUserId" value="${user.userId}">
+                                         <span class='update btn btn-info'><i class="glyphicon glyphicon-pencil"></i>修改</span>
+                                         <span class='delete btn btn-danger'><i class="glyphicon glyphicon-minus"></i>删除</span>
+                                     </td></tr>`
+                        })
+                    }
+                    $(".users").html(str);
+                },
+                error:function(){               //请求失败后的回调函数
+                    alert("操作失败");
+                }
+            });
+        });
+
+        // $("input[name='address']:checked").val(); //取到单选框的值
+        $(".add").on("click", function () {
+            $("#myModal").modal("show")
+            // https://blog.csdn.net/qq_22062405/article/details/103530707
+            $("#myModal .save").on("click", function () {
+                user = {
+                    "userId": $(".modal_userId").val(),
+                    "userName": $(".user_name").val(),
+                    "password": $(".user_password").val(),
+                    "sex": $("input[name='sex']:checked").val(),
+                    "phone": $(".user_phone").val(),
+                    "email": $(".user_email").val(),
+                    "address": $(".user_address").val(),
+                }
+                //console.log(user)
+                if ($(".modal_userId").val() == 0 && $(".modal_userId").val() == ""){
+
+                    $.ajax({
+                        url: "/user/adduser",        //请求的url地址
+                        data: user,
+                        type: "post",                    //请求方式
+                        async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                        dataType: "json",                //返回格式为json
+                        success: function (data) {          //请求成功后的回调函数
+                            if(data.code.code == 99){
+                                swal("成功", "添加成功", "success");
+                            } else if(data.code.code == 95) {
+                                swal("失败", "用户已存在", "error");
+                            } else {
+                                swal("失败", "添加失败", "error");
+                            }
+                            window.location.reload()  // 刷新当前页面
+                        },
+                        error: function () {               //请求失败后的回调函数
+                            swal("失败", "保存失败", "error");
+                        }
+                    })
+                }
+            })
+        })
+
+        $("#myModal .my_close").on("click", function () {
+            $('#myModal').hide()
+            $('#myModal').on("hidden.bs.modal", function() {
+                $("#myModal input").val('')
+                //$("this").removeData("bs.modal");
+            });
+        })
+
+        $(".users").on("click",".update", function () {
+            userId = $(this).siblings(".thisUserId").val()
+            $.ajax({
+                url: "/user/selectuser",        //请求的url地址
+                data: {"userId": userId},
+                type: "post",                    //请求方式
+                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType: "json",                //返回格式为json
+                success: function (data) {          //请求成功后的回调函数
+                    $(".modal_userId").val(data.user.userId)
+                    $(".user_name").val(data.user.userName)
+                    $(".user_password").val(data.user.password)
+                    $(".user_phone").val(data.user.phone)
+                    if(data.user.sex == "男"){
+                        $("input[name='sex']:eq(0)").attr("checked", 'checked')
+                    }else{
+                        $("input[name='sex']:eq(1)").attr("checked", 'checked')
+                    }
+                    $(".user_email").val(data.user.email)
+                    $(".user_address").val(data.user.address)
+                    $("#myModal").modal("show")
+
+                    $("#myModal .save").on("click", function () {
+                        user = {
+                            "userId": $(".modal_userId").val(),
+                            "userName": $(".user_name").val(),
+                            "password": $(".user_password").val(),
+                            "sex": $("input[name='sex']:checked").val(),
+                            "phone": $(".user_phone").val(),
+                            "email": $(".user_email").val(),
+                            "address": $(".user_address").val(),
+                        }
+                        //console.log(user)
+                        if ($(".modal_userId").val() != 0 && $(".modal_userId").val() != ""){
+                            console.log("修改")
+                            $.ajax({
+                                url: "/user/updateuser",        //请求的url地址
+                                data: user,
+                                type: "post",                    //请求方式
+                                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                                dataType: "json",                //返回格式为json
+                                success: function (data) {          //请求成功后的回调函数
+                                    if(data.code.code == 99){
+                                        swal("成功", "编辑成功", "success");
+                                    } else {
+                                        swal("失败", "编辑失败", "error");
+                                    }
+                                    window.location.reload()  // 刷新当前页面
+                                },
+                                error: function () {               //请求失败后的回调函数
+                                    swal("失败", "保存失败", "error");
+                                }
+                            })
+                        }
+                    })
+                },
+                error: function () {               //请求失败后的回调函数
+                    swal("失败", "保存失败", "error");
+                }
+            })
+        })
+
+        $(".users").on("click", ".delete", function () {
+            userId = $(this).siblings(".thisUserId").val()
+            phone = $(this).parent().parent().children().eq(3).text()
+            $.ajax({
+                url: "/user/deleteuser",        //请求的url地址
+                data: {"userId":userId, "phone":phone},
+                type: "post",                    //请求方式
+                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType: "json",                //返回格式为json
+                success: function (data) {          //请求成功后的回调函数
+                    if(data.code.code == 99){
+                        swal("成功", "删除成功", "success");
+                    } else if(data.code.code == 100) {
+                        swal("失败", data.code.message, "error");
+                    } else {
+                        swal("失败", "添加失败", "error");
+                    }
+                },
+                error: function () {               //请求失败后的回调函数
+                    swal("失败", "保存失败", "error");
+                }
+            })
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+
+</head>
+<body>
+    <!--<div id="drawCustomizedPie1" style="height: 400px;width: 800px;margin-top: 200px" onload="drawCustomizedPie()">
+
+    </div>-->
+    <!--data-toggle="popover"属性则为该超链接绑定弹窗效果，data-placement="bottom"指定弹窗相对于超链接显示的位置，data-trigger="hover"则是关键，指定悬浮时触发弹窗显示。-->
+
+    <!--<div class="bind_hover_card">
+        <span data-value="0.9" data-toggle="popover" data-placement="top" data-trigger="hover">
+            正面
+        </span>
+    </div>
+    <div class="bind_hover_card">
+        <span data-value="0.8" data-toggle="popover" data-placement="top" data-trigger="hover">
+            负面
+        </span>
+    </div>-->
+    <table style="margin-top: 200px;margin-bottom: 200px">
+        <caption></caption>
+        <thead>
+            <tr>
+                <td><h3>感情</h3></td>
+            </tr>
+        </thead>
+        <tbody class="datas">
+
+        </tbody>
+    </table>
+
+
+    <script src="../../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/drawing/echarts.min.js" th:src="@{/js/drawing/echarts.min.js}"></script>
+    <script src="../../static/js/decimal.min.js" th:src="@{/js/decimal.min.js}"></script>
+    <script>
+        $(function () {
+            var str = `<tr>
+                            <td>
+                                <span class="bind_hover_card" data-value="0.9" data-toggle="popover" data-placement="top" data-trigger="hover">
+                                    <h3>正面</h3>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr >
+                            <td>
+                                <span class="bind_hover_card" data-value="0.8" data-toggle="popover" data-placement="bottom" data-trigger="hover">
+                                    <h3><u>负面</u></h3>
+                                </span>
+                            </td>
+                        </tr>`
+            $(".datas").html(str)
+        })
+
+       /* $("#drawCustomizedPie1 .bind_hover_card").on('mouseover',"", function () {
+            $("[data-toggle='popover']").popover({
+                html : true,
+                title: '评论感情占比',
+                delay:{show:500, hide:100},
+                content: `<div id="drawCustomizedPie" style="width:200px;height:150px"></div>`,
+                animation: false
+            }).on("mouseenter", function () {
+                $(this).popover('show').on("mouseenter",function(){
+                    let emotion = $(this).data('value')
+                    drawCustomizedPie(emotion)
+                })
+            })
+        })*/
+        $(".datas").on('mouseover',"tr td .bind_hover_card", function () {
+            //let _this = $(this).siblings('.bind_hover_card');
+            //if(event.type == "mouseenter"){
+                //鼠标悬浮
+                $(this).popover({
+                    html : true,
+                    title: '评论感情占比',
+                    delay:{show:500, hide:100},
+                    content: `<div id="drawCustomizedPie" style="width:200px;height:150px"></div>`,
+                    animation: false
+                })/*.on("mouseover", function () {
+
+                })*/
+            $(this).popover('show')
+            let emotion = $(this).data('value')
+            drawCustomizedPie(emotion)
+            //}
+        })
+
+        /*$(function () {
+            $("[data-toggle='popover']").popover({
+                html : true,
+                title: '评论感情占比',
+                delay:{show:500, hide:100},
+                content: `<div id="drawCustomizedPie" style="width:200px;height:150px"></div>`,
+                animation: false
+            }).on("mouseenter", function () {
+                $(this).popover('show').on("mouseenter",function(){
+                    let emotion = $(this).data('value')
+                    drawCustomizedPie(emotion)
+                })
+            })
+        })*/
+        /*$(".bind_hover_card span").popover({
+            html : true,
+            title: title(),
+            delay:{show:100, hide:100},
+            content: function() {
+                // let value = this.val()
+                //alert(this.val())
+                return content();
+            },
+            animation: false
+        }).on("mouseenter", function () {
+            $(this).popover('show').on("mouseover",function(){
+                drawCustomizedPie()
+            })
+        })*/
+
+        function drawCustomizedPie(emotion) {
+            console.log( emotion  + "画饼图")
+
+            let _emotion = new Decimal(1).sub(new Decimal(emotion)).valueOf()
+            option = {
+                //backgroundColor: '#2c343c',
+                title: {
+                    text: '',
+                    left: 'center',
+                    top: 0,
+                    textStyle: {
+                        color: '#cccccc'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                /*visualMap: {
+                    show: false,
+                    min: 80,
+                    max: 600,
+                    inRange: {
+                        colorLightness: [0, 1]
+                    }
+                },*/
+                series: [
+                    {
+                        name: '情感',
+                        type: 'pie',
+                        radius: '100%',   //饼图的半径大小
+                        center: ['50%', '50%'],   //饼图的位置
+                        data: [
+                            {value: emotion, name: '正面', itemStyle:{normal:{color:'#ff6122'}} },
+                            {value: _emotion, name: '负面', itemStyle:{normal:{color:'#3efaea'}} },
+                        ].sort(function (a, b) { return a.value - b.value; }),
+                        roseType: 'radius',
+                        label: {
+                            color: 'rgba(0,0,0,0.9)', //图标颜色
+                            normal : {
+                                formatter: '{b} : {c} ({d}%) \n\n',
+                                textStyle : {
+                                    fontWeight : 'normal',
+                                    fontSize : 12
+                                },
+                                position: 'inner'       // 文字放到图表内部
+                            },
+                        },
+                        labelLine: {
+                            normal: {
+                                show: false  // 去掉指示线
+                            }
+                            /*lineStyle: {
+                                color: 'rgba(0,0,0,0.6)'  //线条颜色
+                            },
+                            smooth: 0.2,
+                            length: 5,
+                            length2: 10*/
+                        },
+                        itemStyle: {
+                            color: '#c23531',
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(245,199,199,0.5)'   //阴影颜色
+                        },
+
+                        animationType: 'scale',
+                        animationEasing: 'elasticOut',
+                        animationDelay: function (idx) {
+                            return Math.random() * 200;
+                        }
+                    }
+                ]
+            };
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('drawCustomizedPie'));
+            //使用制定的配置项和数据显示图表
+            myChart.setOption(option);
+        }
+    </script>
+</body>
+</html>

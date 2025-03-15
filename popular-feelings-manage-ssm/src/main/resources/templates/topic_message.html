@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <!--控件: https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css-->
+    <link type="text/css" rel="stylesheet" href="../static/css/time/bootstrap-datetimepicker.min.css" th:href="@{/css/time/bootstrap-datetimepicker.min.css}">
+</head>
+<body>
+    <!--选择时间-->
+    <div class="row">
+        <div class='col-sm-6'>
+            <!--<div class="form-group">
+                <label>选择日期：</label>
+                &lt;!&ndash;指定 date标记&ndash;&gt;
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label>选择起始时间：</label>
+                <!--指定 date标记-->
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                </div>
+            </div>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <label>选择结束时间：</label>
+                <!--指定 date标记-->
+                <div class='input-group date' id='datetimepicker2'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div><span>创建时间</span></div>-->
+    <div class="row">
+        <div id="topicNumBar" style="height: 600px"></div>
+    </div>
+
+    <div class="row">
+        <div id="oneTopicNumInfo" style="height: 400px"></div>
+    </div>
+
+    <script src="../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <script src="../static/js/drawing/echarts.min.js" th:src="@{/js/drawing/echarts.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <!--bootstrap控件 https://cdn.bootcss.com/moment.js/2.24.0/moment-with-locales.js https://cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js-->
+    <script src="../static/js/time/moment-with-locales.js" th:src="@{/js/time/moment-with-locales.js}"></script>
+    <script src="../static/js/time/bootstrap-datetimepicker.min.js" th:src="@{/js/time/bootstrap-datetimepicker.min.js}"></script>
+
+    <script th:inline="javascript">
+        $(function () {
+            let topics = [[${topics}]]
+            //console.log(topics)
+            drawBar(topics)
+        })
+
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY-MM-DD hh:mm:ss',
+                locale: moment.locale('zh-cn')
+            });
+
+            $('#datetimepicker2').datetimepicker({
+                format: 'YYYY-MM-DD hh:mm:ss',
+                locale: moment.locale('zh-cn')
+            });
+        });
+
+        // input失去焦点事件 "blur"
+        $("#datetimepicker1 .form-control, #datetimepicker2 .form-control").on("blur", function changeDate() {
+            //console.log($("#datetimepicker1").find("input").val())
+            let startTime = $("#datetimepicker1 input").val()
+            let stopTime = $("#datetimepicker2 input").val()
+            // console.log(startTime)
+            // console.log(stopTime)
+            $.ajax({
+                url: "/data/getTopicMessage",        //请求的url地址
+                data: {"startTime": startTime, "stopTime": stopTime},
+                type: "post",                    //请求方式
+                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType: "json",                //返回格式为json
+                success: function (data) {          //请求成功后的回调函数
+                    console.log(data)
+                    drawBar(data.topics)
+                },
+                error: function () {
+                    alert("响应失败");
+                }
+            })
+        })
+
+
+    </script>
+    <script>
+        function drawBar(topics) {
+            var yAxisData = [];
+            var data1 = [];
+            $.each(topics, function(index,topic){
+                yAxisData.push(topic.title);
+                data1.push(topic.num);
+            })
+
+            option = {
+                title: {
+                    text: '话题数目柱状图',
+                    //subtext: '数据来自微博'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['数目']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    name: '数目',
+                    boundaryGap: [0, 0.01]
+                },
+                yAxis: {
+                    type: 'category',
+                    name: '标题',
+                    data: yAxisData
+                },
+                // 缩放
+                /*dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        start: 100,
+                        end: 94,
+                        handleSize: 8
+                    },
+                    {
+                        type: 'inside',
+                        start: 100,
+                        end: 94
+                    },
+                    {
+                        type: 'slider',
+                        show: true,
+                        yAxisIndex: 0,
+                        filterMode: 'empty',
+                        width: 12,
+                        height: '70%',
+                        handleSize: 8,
+                        showDataShadow: false,
+                        left: '93%'
+                    }
+                ],*/
+                series: [
+                    {
+                        name: "数目",
+                        type: 'bar',
+                        data: data1
+                    }
+                ]
+            };
+
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('topicNumBar'));
+
+            //使用制定的配置项和数据显示图表
+            myChart.setOption(option);
+
+            myChart.on('click', function (params) {
+                //柱状图下边的名称（1月,2月,……,11月,12月）params.name
+
+                //柱子的值（2.6, 5.9, ……,6.0,2.3）params.value
+
+                //每个月份的第几个柱子params.seriesIndex;
+                console.log(params.name)
+                getBrokenLine(params.name);
+
+            })
+        }
+
+        function getBrokenLine(click_title) {
+            let startTime = $("#datetimepicker1 input").val()
+            let stopTime = $("#datetimepicker2 input").val()
+
+            $.ajax({
+                url: "/data/getOneTopicMessage",        //请求的url地址
+                data: {"title": click_title, "startTime": startTime, "stopTime": stopTime},
+                type: "post",                    //请求方式
+                async: true,                     //请求是否异步，默认为异步，这也是ajax重要特性
+                dataType: "json",                //返回格式为json
+                success: function (data) {          //请求成功后的回调函数
+                    console.log(data)
+                    drawBrokenLine(data.oneTitle)
+                },
+                error: function () {
+                    alert("响应失败");
+                }
+            })
+        }
+
+        function drawBrokenLine(oneTitle) {
+
+            let xAxisData = [];
+            let data = [];
+            $.each(oneTitle, function(index,topic){
+                xAxisData.push(topic.createTime);
+                data.push(topic.num);
+            })
+
+            myOption = {
+                //https://blog.csdn.net/sleepwalker_1992/article/details/82709793
+                title: {
+                    text: '微博热度'
+                },
+                legend: {
+                    // orient 设置布局方式，默认水平布局，可选值：'horizontal'（水平） ¦ 'vertical'（垂直）
+                    orient: 'horizontal',
+                    // x 设置水平安放位置，默认全图居中，可选值：'center' ¦ 'left' ¦ 'right' ¦ {number}（x坐标，单位px）
+                    x: 'left',
+                    // y 设置垂直安放位置，默认全图顶端，可选值：'top' ¦ 'bottom' ¦ 'center' ¦ {number}（y坐标，单位px）
+                    y: 'top',
+                    data: ['实际']
+                },
+
+                //  图表距边框的距离,可选值：'百分比'¦ {number}（单位px）
+                grid: {
+                    top: '16%',   // 等价于 y: '16%'
+                    left: '3%',
+                    right: '8%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+
+                // 提示框
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                //工具框，可以选择
+                toolbox: {
+                    feature: {
+                        saveAsImage: {} //下载工具
+                    }
+                },
+
+                xAxis: {
+                    name: '日期',
+                    type: 'category',
+                    axisLine: {
+                        lineStyle: {
+                            // 设置x轴颜色
+                            color: '#912CEE'
+                        }
+                    },
+                    // 设置X轴数据旋转倾斜
+                    axisLabel: {
+                        rotate: 30, // 旋转角度
+                        interval: 0  //设置X轴数据间隔几个显示一个，为0表示都显示
+                    },
+                    // boundaryGap值为false的时候，折线第一个点在y轴上
+                    boundaryGap: false,
+                    data: xAxisData
+                },
+
+                yAxis: {
+                    name: '数值',
+                    type: 'value',
+                    /*min:0, // 设置y轴刻度的最小值
+                    max:1800,  // 设置y轴刻度的最大值
+                    splitNumber:9,  // 设置y轴刻度间隔个数
+                    axisLine: {
+                        lineStyle: {
+                            // 设置y轴颜色
+                            color: '#87CEFA'
+                        }
+                    },*/
+                },
+
+                series: [
+                    {
+                        name: '微博条数',
+                        data: data,
+                        type: 'line',
+                        // 设置小圆点消失
+                        // 注意：设置symbol: 'none'以后，拐点不存在了，设置拐点上显示数值无效
+                        symbol:'circle',    //symbol: 'none',
+                        // 设置折线弧度，取值：0-1之间
+                        smooth: 0.5,
+                    }
+                ],
+
+            }
+
+            //初始化echarts实例
+            var myChart2 = echarts.init(document.getElementById('oneTopicNumInfo'));
+
+            //使用制定的配置项和数据显示图表
+            myChart2.setOption(myOption);
+
+        }
+    </script>
+    <!--<script>
+        function drawBar(topics) {
+            var xAxisData = [];
+            var data1 = [];
+            $.each(topics, function(index,topic){
+                xAxisData.push(topic.title);
+                data1.push(topic.num);
+            })
+
+            option = {
+                title: {
+                    text: '话题数目柱状图'
+                },
+                legend: {
+                    data: ['数目']
+                },
+                toolbox: {
+                    // y: 'bottom',
+                    feature: {
+                        magicType: {
+                            type: ['stack', 'tiled']
+                        },
+                        dataView: {},
+                        saveAsImage: {
+                            pixelRatio: 2
+                        }
+                    }
+                },
+                tooltip: {},
+                xAxis: {
+                    name: "标题",
+                    data: xAxisData,
+                    splitLine: {
+                        show: false     //是否显示网格
+                    },
+                    axisLabel:{
+                        interval:0,     //使x轴横坐标全部显示
+                        rotate: 40,
+                    },
+                    /*grid: {
+                        left: '10%',
+                        bottom:'35%'
+                    },*/
+                },
+                yAxis: {
+                    name: "数目",
+                },
+                // 缩放
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        start: 94,
+                        end: 100,
+                        handleSize: 8
+                    },
+                    {
+                        type: 'inside',
+                        start: 94,
+                        end: 100
+                    },
+                    {
+                        type: 'slider',
+                        show: true,
+                        yAxisIndex: 0,
+                        filterMode: 'empty',
+                        width: 12,
+                        height: '70%',
+                        handleSize: 8,
+                        showDataShadow: false,
+                        left: '93%'
+                    }
+                ],
+                series: [{
+                    name: '数目',
+                    type: 'bar',
+                    data: data1,
+                    animationDelay: function (idx) {
+                        return idx * 10;  // 动画延迟时间
+                    }
+                },
+                ],
+                animationEasing: 'elasticOut',
+                animationDelayUpdate: function (idx) {
+                    return idx * 5;
+                }
+            };
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('topicNumBar'));
+
+            //使用制定的配置项和数据显示图表
+            myChart.setOption(option);
+        }
+    </script>-->
+</body>
+</html>
